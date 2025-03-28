@@ -1,0 +1,200 @@
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker volume create vol1
+vol1
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker volume create vol2
+vol2
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker volume ls
+DRIVER    VOLUME NAME
+local     vol1
+local     vol2
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker pull ubuntu:22.04
+22.04: Pulling from library/ubuntu
+9cb31e2e37ea: Pull complete 
+Digest: sha256:ed1544e454989078f5dec1bfdabd8c5cc9c48e0705d07b678ab6ae3fb61952d2
+Status: Downloaded newer image for ubuntu:22.04
+docker.io/library/ubuntu:22.04
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       22.04     a24be041d957   2 months ago   77.9MB
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker inspect vol1
+[
+    {
+        "CreatedAt": "2025-03-28T06:06:12Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/vol1/_data",
+        "Name": "vol1",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker inspect vol2
+[
+    {
+        "CreatedAt": "2025-03-28T06:06:14Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/vol2/_data",
+        "Name": "vol2",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run vol1
+Unable to find image 'vol1:latest' locally
+docker: Error response from daemon: pull access denied for vol1, repository does not exist or may require 'docker login': denied: requested access to the resource is denied.
+See 'docker run --help'.
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ 
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       22.04     a24be041d957   2 months ago   77.9MB
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run --mount type=volume,target=/home/vol1 --name myubuntu -it ubuntu:22.04
+root@10c800548b8c:/# ls -l
+total 48
+lrwxrwxrwx   1 root root    7 Jan 26 02:05 bin -> usr/bin
+drwxr-xr-x   2 root root 4096 Apr 18  2022 boot
+drwxr-xr-x   5 root root  360 Mar 28 06:30 dev
+drwxr-xr-x   1 root root 4096 Mar 28 06:30 etc
+drwxr-xr-x   1 root root 4096 Mar 28 06:30 home
+lrwxrwxrwx   1 root root    7 Jan 26 02:05 lib -> usr/lib
+lrwxrwxrwx   1 root root    9 Jan 26 02:05 lib32 -> usr/lib32
+lrwxrwxrwx   1 root root    9 Jan 26 02:05 lib64 -> usr/lib64
+lrwxrwxrwx   1 root root   10 Jan 26 02:05 libx32 -> usr/libx32
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 media
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 mnt
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 opt
+dr-xr-xr-x 239 root root    0 Mar 28 06:30 proc
+drwx------   2 root root 4096 Jan 26 02:13 root
+drwxr-xr-x   5 root root 4096 Jan 26 02:13 run
+lrwxrwxrwx   1 root root    8 Jan 26 02:05 sbin -> usr/sbin
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 srv
+dr-xr-xr-x  12 root root    0 Mar 28 06:30 sys
+drwxrwxrwt   2 root root 4096 Jan 26 02:13 tmp
+drwxr-xr-x  14 root root 4096 Jan 26 02:05 usr
+drwxr-xr-x  11 root root 4096 Jan 26 02:13 var
+root@10c800548b8c:/# cd /home/vol1
+root@10c800548b8c:/home/vol1# cat > test_vol.txt
+проверка работа тома
+root@10c800548b8c:/home/vol1# cat test_vol.txt
+проверка работа тома
+root@10c800548b8c:/home/vol1# exit
+exit
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run --mount type=volume,source=vol1,target=/home/vol1 --mount type=volume,source=vol2,target=/home/vol2 --name mybuntu1 -it --rm
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Create and run a new container from an image
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run --mount type=volume,source=vol1,target=/home/vol1 --mount type=volume,source=vol2,target=/home/vol2 --name mybuntu1 -it --rm ubuntu:22.04
+root@e9f6a27bf8ab:/# ls -l 
+total 48
+lrwxrwxrwx   1 root root    7 Jan 26 02:05 bin -> usr/bin
+drwxr-xr-x   2 root root 4096 Apr 18  2022 boot
+drwxr-xr-x   5 root root  360 Mar 28 06:35 dev
+drwxr-xr-x   1 root root 4096 Mar 28 06:35 etc
+drwxr-xr-x   1 root root 4096 Mar 28 06:35 home
+lrwxrwxrwx   1 root root    7 Jan 26 02:05 lib -> usr/lib
+lrwxrwxrwx   1 root root    9 Jan 26 02:05 lib32 -> usr/lib32
+lrwxrwxrwx   1 root root    9 Jan 26 02:05 lib64 -> usr/lib64
+lrwxrwxrwx   1 root root   10 Jan 26 02:05 libx32 -> usr/libx32
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 media
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 mnt
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 opt
+dr-xr-xr-x 238 root root    0 Mar 28 06:35 proc
+drwx------   2 root root 4096 Jan 26 02:13 root
+drwxr-xr-x   5 root root 4096 Jan 26 02:13 run
+lrwxrwxrwx   1 root root    8 Jan 26 02:05 sbin -> usr/sbin
+drwxr-xr-x   2 root root 4096 Jan 26 02:05 srv
+dr-xr-xr-x  12 root root    0 Mar 28 06:35 sys
+drwxrwxrwt   2 root root 4096 Jan 26 02:13 tmp
+drwxr-xr-x  14 root root 4096 Jan 26 02:05 usr
+drwxr-xr-x  11 root root 4096 Jan 26 02:13 var
+root@e9f6a27bf8ab:/# cd /home/vol1
+root@e9f6a27bf8ab:/home/vol1# ls -l
+total 0
+root@e9f6a27bf8ab:/home/vol1# cat test_vol.txt
+cat: test_vol.txt: No such file or directory
+root@e9f6a27bf8ab:/home/vol1# cd vol1
+bash: cd: vol1: No such file or directory
+root@e9f6a27bf8ab:/home/vol1# exit   
+exit
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run --mount type=volume,target=/home/vol1 --name myubuntu -it ubuntu:22.04
+docker: Error response from daemon: Conflict. The container name "/myubuntu" is already in use by container "10c800548b8c3afa1550f7ae18abcb5485e688300dd71da2ff3a4ad45797ee40". You have to remove (or rename) that container to be able to reuse that name.
+See 'docker run --help'.
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker ps -a
+CONTAINER ID   IMAGE          COMMAND       CREATED         STATUS                     PORTS     NAMES
+10c800548b8c   ubuntu:22.04   "/bin/bash"   8 minutes ago   Exited (0) 6 minutes ago             myubuntu
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker rm myubuntu
+myubuntu
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run --mount type=volume,target=/home/vol1 --name myubuntu -it ubuntu:22.04
+root@cb8da7bf6f60:/# cd vol1
+bash: cd: vol1: No such file or directory
+root@cb8da7bf6f60:/# cd /home/vol1
+root@cb8da7bf6f60:/home/vol1# cat > test_vol.txt
+Проверка работы
+root@cb8da7bf6f60:/home/vol1# exit 
+exit
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run --mount type=volume,source=vol1,target=/home/vol1 --mount type=volume,source=vol2,target=/home/vol2 --name mybuntu1 -it --rm ubuntu:22.04
+root@46f36c4fa538:/# cd /home/vol1
+root@46f36c4fa538:/home/vol1# ls -l
+total 0
+root@46f36c4fa538:/home/vol1# exit
+exit
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker run --mount type=volume,source=vol1,target=/home/vol1 --mount type=volume,source=vol2,target=/home/vol2 --name myubuntu1 -it --rm ubuntu:22.04
+root@d7227eb5bec6:/# cd /home/vol1
+root@d7227eb5bec6:/home/vol1# cat > test_vol2_myub1.txt
+Проверка с vol1
+root@d7227eb5bec6:/home/vol1# cd ../vol2
+root@d7227eb5bec6:/home/vol2# ls -l
+total 0
+root@d7227eb5bec6:/home/vol2# cp ../vol1/* ./
+root@d7227eb5bec6:/home/vol2# ls -l
+total 4
+-rw-r--r-- 1 root root 25 Mar 28 06:42 test_vol2_myub1.txt
+root@d7227eb5bec6:/home/vol2# mv test_vol2_myub1.txt test_vol1_myub1.txt
+root@d7227eb5bec6:/home/vol2# ls -l
+total 4
+-rw-r--r-- 1 root root 25 Mar 28 06:42 test_vol1_myub1.txt
+root@d7227eb5bec6:/home/vol2# exit
+exit
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker ps -a
+CONTAINER ID   IMAGE          COMMAND       CREATED         STATUS                     PORTS     NAMES
+cb8da7bf6f60   ubuntu:22.04   "/bin/bash"   5 minutes ago   Exited (0) 4 minutes ago             myubuntu
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ mkdir vol3
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ cd vol3
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ cat>message to_container
+cat: to_container: No such file or directory
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ cat > message to_container
+cat: to_container: No such file or directory
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ cat
+jk;lkj;lkj
+jk;lkj;lkj
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ cat > message_to_container
+привет контейнеру
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ 
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ docker run -it --mount type=bind,source=.,target=/home/mnt --name cont1 --rm ubuntu:22.04
+root@2790a96959c5:/# cd /home/mnt
+root@2790a96959c5:/home/mnt# 1s -1
+bash: 1s: command not found
+root@2790a96959c5:/home/mnt# ls -l
+total 4
+-rw-rw-rw- 1 1000 1000  0 Mar 28 06:46 message
+-rw-rw-rw- 1 1000 1000 34 Mar 28 06:47 message_to_container
+root@2790a96959c5:/home/mnt# cat message
+root@2790a96959c5:/home/mnt# cat >message_from_cont1.txt
+привет от контейнера cont1
+root@00202c8a1d49:/home/mnt# exit
+root@2790a96959c5:/home/mnt# exit
+exit
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ ls -l
+total 8
+-rw-rw-rw- 1 codespace codespace  0 Mar 28 06:46 message
+-rw-rw-rw- 1 root      root      85 Mar 28 06:55 message_from_cont1.txt
+-rw-rw-rw- 1 codespace codespace 34 Mar 28 06:47 message_to_container
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ cat message_from_cont1.txt
+привет от контейнера cont1
+
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ cat message_to_container.txt
+cat: message_to_container.txt: No such file or directory
+@lizaveta75 ➜ /workspaces/mdk02.01/vol3 (main) $ cat message_to_container
+привет контейнеру
