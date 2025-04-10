@@ -1,0 +1,123 @@
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker pull openjdk
+Using default tag: latest
+latest: Pulling from library/openjdk
+197c1adcd755: Pull complete 
+57b698b7af4b: Pull complete 
+95a27dbe0150: Pull complete 
+Digest: sha256:9b448de897d211c9e0ec635a485650aed6e28d4eca1efbc34940560a480b3f1f
+Status: Downloaded newer image for openjdk:latest
+docker.io/library/openjdk:latest
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       22.04     a24be041d957   2 months ago   77.9MB
+openjdk      latest    71260f256d19   2 years ago    470MB
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ mkdir prj
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ cd prj
+@lizaveta75 ➜ /workspaces/mdk02.01/prj (main) $ vim pr001.java
+@lizaveta75 ➜ /workspaces/mdk02.01/prj (main) $ cat pr001.java
+@lizaveta75 ➜ /workspaces/mdk02.01/prj (main) $ cat pr001.java
+class pr001 {
+        public static void main (String[]arg){
+                for (int i=0; i < 10; i++)
+                        System.out.println("Проверка");
+        }
+}
+@lizaveta75 ➜ /workspaces/mdk02.01/prj (main) $ vim Dockerfile
+@lizaveta75 ➜ /workspaces/mdk02.01/prj (main) $ cat Dockerfile
+FROM openjdk
+COPY . /java
+WORKDIR ./java
+RUN javac pr001.java
+CMD ["java","pr001"]
+@lizaveta75 ➜ /workspaces/mdk02.01/prj (main) $ docker build -t testjava:0.1 .
+[+] Building 1.3s (9/9) FINISHED                                                                                                          docker:default
+ => [internal] load build definition from Dockerfile                                                                                                0.0s
+ => => transferring dockerfile: 120B                                                                                                                0.0s
+ => WARN: WorkdirRelativePath: Relative workdir "./java" can have unexpected results if the base image changes (line 3)                             0.0s
+ => [internal] load metadata for docker.io/library/openjdk:latest                                                                                   0.0s
+ => [internal] load .dockerignore                                                                                                                   0.0s
+ => => transferring context: 2B                                                                                                                     0.0s
+ => [internal] load build context                                                                                                                   0.0s
+ => => transferring context: 203B                                                                                                                   0.0s
+ => CACHED [1/4] FROM docker.io/library/openjdk:latest                                                                                              0.0s
+ => [2/4] COPY . /java                                                                                                                              0.0s
+ => [3/4] WORKDIR ./java                                                                                                                            0.0s
+ => [4/4] RUN javac pr001.java                                                                                                                      0.7s
+ => exporting to image                                                                                                                              0.5s
+ => => exporting layers                                                                                                                             0.5s
+ => => writing image sha256:9bb2857d273682e16bf14073f85099a73dd0612cc309ca600652c2a9c9722521                                                        0.0s
+ => => naming to docker.io/library/testjava:0.1                                                                                                     0.0s
+
+ 1 warning found (use docker --debug to expand):
+ - WorkdirRelativePath: Relative workdir "./java" can have unexpected results if the base image changes (line 3)
+
+@lizaveta75 ➜ ~ $ cd /workspaces/mdk02.01
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ mkdir prj2
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ cd prj2
+@lizaveta75 ➜ /workspaces/mdk02.01/prj2 (main) $ vim pr002.php
+@lizaveta75 ➜ /workspaces/mdk02.01/prj2 (main) $ cat pr002.php
+<?php
+echo'Выполнение php-скрипта на веб-сервере'
+?>
+@lizaveta75 ➜ /workspaces/mdk02.01/prj2 (main) $ vim Dockerfile
+@lizaveta75 ➜ /workspaces/mdk02.01/prj2 (main) $ cd /workspaces/mdk02.01
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ docker pull apache
+Using default tag: latest
+Error response from daemon: pull access denied for apache, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+@lizaveta75 ➜ /workspaces/mdk02.01 (main) $ cd prj2
+@lizaveta75 ➜ /workspaces/mdk02.01/prj2 (main) $ vim Dockerfile
+@lizaveta75 ➜ /workspaces/mdk02.01/prj2 (main) $ docker build -t testphp:0.2 .
+[+] Building 12.8s (7/7) FINISHED                                                                                                         docker:default
+ => [internal] load build definition from Dockerfile                                                                                                0.0s
+ => => transferring dockerfile: 89B                                                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/php:7.2-apache                                                                                   1.2s
+ => [auth] library/php:pull token for registry-1.docker.io                                                                                          0.0s
+ => [internal] load .dockerignore                                                                                                                   0.0s
+ => => transferring context: 2B                                                                                                                     0.0s
+ => [1/2] FROM docker.io/library/php:7.2-apache@sha256:4dc0f0115acf8c2f0df69295ae822e49f5ad5fe849725847f15aa0e5802b55f8                            10.4s
+ => => resolve docker.io/library/php:7.2-apache@sha256:4dc0f0115acf8c2f0df69295ae822e49f5ad5fe849725847f15aa0e5802b55f8                             0.0s
+ => => sha256:6ec7b7d162b24bd6df88abde89ceb6d7bbc2be927f025c9dd061af2b0c328cfe 27.10MB / 27.10MB                                                    0.7s
+ => => sha256:25417b6c9c2e1a52b551ba89087f4d07c216f58784773c9e7a1710a1f6e2b4a1 3.24kB / 3.24kB                                                      0.0s
+ => => sha256:c61d277263e19d2ce30a6bae41115c811eb0f9274a601a5e3ee621e54c8a74f7 13.18kB / 13.18kB                                                    0.0s
+ => => sha256:afb30f0cd8e0ff78b5eecdc2d9365a50441ad83c5db5f1e87942d6426237fa56 76.65MB / 76.65MB                                                    1.7s
+ => => sha256:4dc0f0115acf8c2f0df69295ae822e49f5ad5fe849725847f15aa0e5802b55f8 1.65kB / 1.65kB                                                      0.0s
+ => => sha256:db606474d60ce31604505c7d6dad9a66cb42f3818fca738832db2f2091cf89c9 225B / 225B                                                          0.3s
+ => => sha256:3bb2e805159413e5278b859f7fbb86ddfc99e667cb705d5d5aec0a7c8ffcf1b5 225B / 225B                                                          0.7s
+ => => extracting sha256:6ec7b7d162b24bd6df88abde89ceb6d7bbc2be927f025c9dd061af2b0c328cfe                                                           2.1s
+ => => sha256:c2199db96575122fd559c29b619a2773fe9069e0266312a6369ac95f4464b1dd 434B / 434B                                                          1.7s
+ => => sha256:4c761b44e2ccbff3f10b254b21bb00a52dfd26919ad9e3f7efcd569196e6c26b 18.68MB / 18.68MB                                                    2.3s
+ => => sha256:1b9a9381eea8f93068e8043f18ea59b709c07256e2f90962931a1433fbdf5e79 487B / 487B                                                          1.9s
+ => => sha256:fd07bbc59d347c16686f107676436a2281e4128033f105ca7a602aa195bcbe04 12.65MB / 12.65MB                                                    2.1s
+ => => sha256:72b73ab27698b55aa309173abd0cdd758291b9feaac31342c48ff12f3be14876 494B / 494B                                                          2.4s
+ => => sha256:983308f4f0d6304dc6cecde8fd66ba5a94a08873a3b8205eb5ff1ea98b419dbc 13.82MB / 13.82MB                                                    2.6s
+ => => sha256:5c5516e56582a30bd2e69c32d17a169ed7227900318e9d7b5949c8fb447308f5 210B / 210B                                                          2.8s
+ => => sha256:6c13f026e6da09e10ca2edb704b335a62bac29e549a2d0b35e535c9aa8dbeeba 2.27kB / 2.27kB                                                      2.8s
+ => => sha256:e5e6cd16368920e691da5b8791184d7a8d579dd5cd5e8c533ad2bf0b82c2d0fc 248B / 248B                                                          2.7s
+ => => sha256:154729f6ba8609ef7d5af1bfad81efe814cbbca18509834908735c9aced174d3 897B / 897B                                                          3.5s
+ => => extracting sha256:db606474d60ce31604505c7d6dad9a66cb42f3818fca738832db2f2091cf89c9                                                           0.0s
+ => => extracting sha256:afb30f0cd8e0ff78b5eecdc2d9365a50441ad83c5db5f1e87942d6426237fa56                                                           2.3s
+ => => extracting sha256:3bb2e805159413e5278b859f7fbb86ddfc99e667cb705d5d5aec0a7c8ffcf1b5                                                           0.0s
+ => => extracting sha256:4c761b44e2ccbff3f10b254b21bb00a52dfd26919ad9e3f7efcd569196e6c26b                                                           0.4s
+ => => extracting sha256:c2199db96575122fd559c29b619a2773fe9069e0266312a6369ac95f4464b1dd                                                           0.0s
+ => => extracting sha256:1b9a9381eea8f93068e8043f18ea59b709c07256e2f90962931a1433fbdf5e79                                                           0.0s
+ => => extracting sha256:fd07bbc59d347c16686f107676436a2281e4128033f105ca7a602aa195bcbe04                                                           0.1s
+ => => extracting sha256:72b73ab27698b55aa309173abd0cdd758291b9feaac31342c48ff12f3be14876                                                           0.0s
+ => => extracting sha256:983308f4f0d6304dc6cecde8fd66ba5a94a08873a3b8205eb5ff1ea98b419dbc                                                           0.4s
+ => => extracting sha256:6c13f026e6da09e10ca2edb704b335a62bac29e549a2d0b35e535c9aa8dbeeba                                                           0.0s
+ => => extracting sha256:e5e6cd16368920e691da5b8791184d7a8d579dd5cd5e8c533ad2bf0b82c2d0fc                                                           0.0s
+ => => extracting sha256:5c5516e56582a30bd2e69c32d17a169ed7227900318e9d7b5949c8fb447308f5                                                           0.0s
+ => => extracting sha256:154729f6ba8609ef7d5af1bfad81efe814cbbca18509834908735c9aced174d3                                                           0.0s
+ => [2/2] WORKDIR /var/www/html                                                                                                                     0.0s
+ => exporting to image                                                                                                                              1.0s
+ => => exporting layers                                                                                                                             0.9s
+ => => writing image sha256:4e61eb567e956ffbcba68cd936dee5b86247f1bfa96194f2b53629d255aaa433                                                        0.0s
+ => => naming to docker.io/library/testphp:0.2                                                                                                      0.0s
+@lizaveta75 ➜ /workspaces/mdk02.01/prj2 (main) $ docker run -d -p 8080:80 --name phpapp testphp:0.2
+34ba1c6a3de4b6162049fe9d89903924e98364095b320b3ebe97e7addfeb0d09
+
+@lizaveta75 ➜ /workspaces/mdk02.01/prj (main) $ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+testphp      0.2       4e61eb567e95   8 minutes ago    410MB
+testjava     0.1       9bb2857d2736   23 minutes ago   470MB
+ubuntu       22.04     a24be041d957   2 months ago     77.9MB
+openjdk      latest    71260f256d19   2 years ago      470MB
